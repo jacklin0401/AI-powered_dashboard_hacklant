@@ -1,5 +1,14 @@
 
 ---
+
+## 🧾 Summary
+
+**PortfolioIQ** is an AI-powered portfolio analyzer that helps investors understand how strong—or risky—their stock holdings really are. By combining live market data with AI-driven insights, the app evaluates a user’s portfolio and delivers a clear risk score, diversification grade, key red flags, and actionable recommendations.
+
+Instead of just showing what you own, PortfolioIQ tells you how well you’re positioned—and what to do next.
+
+> Input your portfolio → get instant analysis → make smarter investment decisions.
+
 ## 🧰 Tech Stack
 
 ### 🖥️ Frontend
