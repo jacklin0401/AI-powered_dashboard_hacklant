@@ -18,26 +18,37 @@ Instead of just showing what you own, PortfolioIQ tells you how well you’re po
 - **fl_chart** — Data visualization and charting
 - **Google Fonts** — Typography
 
+### ⚙️ Backend
+- **Python FastAPI** — REST API framework
+- **Uvicorn** — ASGI server
+- **Pydantic** — Data validation
+- **yfinance** — Yahoo Finance data
+- **Anthropic SDK** — Claude AI integration
+
 ### 🧠 AI Analyzer Agent
 - **Claude API (Anthropic)** — Portfolio analysis and insights
 
 ### 📈 Market Data
-- **Alpha Vantage API** (planned)
-- **Yahoo Finance** (fallback via yfinance, planned)
-- **Mock data** (current implementation)
+- **Yahoo Finance (yfinance)** — Primary market data source
+- **Alpha Vantage API** — Additional market data (optional)
+- **Mock data** — Fallback for development
 
 ### 🔧 Core Dependencies
-- **http** — API communication
+- **http** — API communication (Flutter)
+- **requests** — HTTP client (Python)
+- **pandas/numpy** — Data processing
+- **python-dotenv** — Environment management
 - **cupertino_icons** — iOS-style icons
 
 ### 🚀 Deployment
-- **Flutter Build** — Android APK, iOS IPA
-- **Web deployment** — Flutter Web
-- **Desktop** — Windows, macOS, Linux support
+- **Flutter Build** — Android APK, iOS IPA, Web, Desktop
+- **Railway/Render** — Backend deployment
+- **Vercel** — Web deployment (optional)
 
 ### 🛠️ Dev Tools
 - **VS Code** — Primary IDE
 - **Flutter SDK** — Development framework
+- **Python 3.11+** — Backend runtime
 - **Dart SDK** (^3.11.0)
 - **Git + GitHub** — Version control
 
@@ -122,6 +133,51 @@ Instead of just showing what you own, PortfolioIQ tells you how well you’re po
 ```bash
 flutter test
 ```
+
+## 🔧 Backend Setup
+
+The app includes a Python FastAPI backend for real market data and AI analysis.
+
+### Backend Prerequisites
+- **Python 3.11+** — [Download Python](https://python.org)
+- **API Keys**:
+  - Anthropic API Key (for Claude AI)
+  - Alpha Vantage API Key (optional)
+
+### Backend Installation
+
+1. **Navigate to backend directory**
+   ```bash
+   cd backend
+   ```
+
+2. **Create virtual environment**
+   ```bash
+   py -m venv venv
+   venv\Scripts\activate  # Windows
+   # source venv/bin/activate  # macOS/Linux
+   ```
+
+3. **Install dependencies**
+   ```bash
+   pip install -r requirements.txt
+   ```
+
+4. **Set up environment variables**
+   ```bash
+   cp .env.example .env
+   # Edit .env with your API keys
+   ```
+
+5. **Run the backend server**
+   ```bash
+   python main.py
+   ```
+
+The backend will be available at `http://localhost:8000`
+
+### API Documentation
+Visit `http://localhost:8000/docs` for interactive API documentation.
 
 ---
 
