@@ -1,17 +1,71 @@
-# dashboard
 
-A new Flutter project.
+---
+## 🧰 Tech Stack
 
-## Getting Started
+### 🖥️ Frontend
+- React
+- Tailwind CSS
+- Recharts (data visualization)
+- Lucide React (icons)
 
-This project is a starting point for a Flutter application.
+### 🧠 AI
+- Claude API (Anthropic) — portfolio analysis
 
-A few resources to get you started if this is your first Flutter project:
+### 📈 Market Data
+- Alpha Vantage API (primary)
+- Yahoo Finance (fallback via yfinance)
 
-- [Learn Flutter](https://docs.flutter.dev/get-started/learn-flutter)
-- [Write your first Flutter app](https://docs.flutter.dev/get-started/codelab)
-- [Flutter learning resources](https://docs.flutter.dev/reference/learning-resources)
+### ⚙️ Backend
+- Node.js + Express **or** Python FastAPI
+- Axios / Fetch for API calls
 
-For help getting started with Flutter development, view the
-[online documentation](https://docs.flutter.dev/), which offers tutorials,
-samples, guidance on mobile development, and a full API reference.
+### 🚀 Deployment
+- Vercel — frontend
+- Railway / Render — backend
+
+### 🛠️ Dev Tools
+- VS Code
+- Git + GitHub
+- Postman
+
+---
+
+## ✨ Features
+
+### 📥 Portfolio Input
+- Add stock ticker, shares, and purchase price
+- Pre-loaded sample portfolio for instant demo
+
+### 🧠 AI Analysis
+- Risk scoring
+- Diversification grading
+- Portfolio weaknesses detection
+- Actionable investment suggestions
+
+### 📊 Dashboard
+- 🥧 Sector allocation pie chart  
+- 📊 Stock performance bar chart  
+- 🌡️ Risk meter visualization  
+- 💬 AI insight panel  
+
+### 🎯 Demo-Ready UX
+- One-click **“Analyze My Portfolio”**
+- Mobile-friendly
+- “Roast My Portfolio” button for engagement
+
+---
+
+## 🪜 How It Works
+
+1. **User enters portfolio**
+2. **App fetches market data** for each stock
+3. **Portfolio is enriched** with financial metrics:
+   - Price
+   - Sector
+   - Beta
+   - P/E ratio
+   - 52-week performance
+4. **Claude API analyzes the data**
+5. **Results are rendered** in charts + insights
+
+---
