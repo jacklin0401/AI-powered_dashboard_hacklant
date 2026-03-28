@@ -38,6 +38,18 @@ dependencies:
   # Use with the CupertinoIcons class for iOS style icons.
   cupertino_icons: ^1.0.8
 
+  # HTTP client for API calls
+  http: ^1.1.0
+
+  # Environment variable loader
+  flutter_dotenv: ^5.0.2
+
+  # Google Fonts for typography
+  google_fonts: ^6.1.0
+
+  # Charts and data visualization
+  fl_chart: ^0.66.0
+
 dev_dependencies:
   flutter_test:
     sdk: flutter
