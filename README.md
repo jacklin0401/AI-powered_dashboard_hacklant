@@ -18,7 +18,7 @@ Instead of just showing what you own, PortfolioIQ tells you how well you’re po
 - **fl_chart** — Data visualization and charting
 - **Google Fonts** — Typography
 
-### 🧠 AI
+### 🧠 AI Analyzer Agent
 - **Claude API (Anthropic)** — Portfolio analysis and insights
 
 ### 📈 Market Data
