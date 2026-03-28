@@ -38,6 +38,9 @@ dependencies:
   # HTTP client for API calls
   http: ^1.1.0
 
+  # Environment variable loader
+  flutter_dotenv: ^5.0.2
+
   # Google Fonts for typography
   google_fonts: ^6.1.0
 
