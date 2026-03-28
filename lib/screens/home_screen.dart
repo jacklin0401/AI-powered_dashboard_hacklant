@@ -56,7 +56,7 @@ class _HomeScreenState extends State<HomeScreen> with TickerProviderStateMixin {
   Future<void> _analyze() async {
     setState(() { _loading = true; _error = null; });
     try {
-      final enriched = PortfolioService.enrichHoldings(_holdings);
+      final enriched = await PortfolioService.enrichHoldings(_holdings);
       final analysis = await PortfolioService.analyzeWithClaude(enriched);
       setState(() {
         _enriched = enriched;

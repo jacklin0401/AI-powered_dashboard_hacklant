@@ -4,6 +4,6 @@ pydantic==2.5.0
 requests==2.31.0
 python-dotenv==1.0.0
 yfinance==0.2.18
-anthropic==0.7.8
+anthropic==0.40.0
 pandas==2.1.4
 numpy==1.26.2

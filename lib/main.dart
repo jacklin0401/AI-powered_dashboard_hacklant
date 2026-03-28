@@ -7,7 +7,6 @@ import 'theme.dart';
 Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
   await dotenv.load(fileName: 'backend/.env');
-
   runApp(const PortfolioIQApp());
 }
 
