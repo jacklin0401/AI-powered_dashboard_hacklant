@@ -1,6 +1,7 @@
 // lib/widgets/charts_tab.dart
+// Uses only Flutter built-ins (CustomPainter) — no fl_chart dependency needed.
+import 'dart:math';
 import 'package:flutter/material.dart';
-import 'package:fl_chart/fl_chart.dart';
 import '../models/holding.dart';
 import '../theme.dart';
 
@@ -25,35 +26,26 @@ class ChartsTab extends StatelessWidget {
     return SingleChildScrollView(
       child: Column(
         children: [
-          // Sector Allocation Pie
-          Container(
-            padding: const EdgeInsets.all(20),
-            decoration: BoxDecoration(
-              color: Colors.white.withOpacity(0.02),
-              border: Border.all(color: kBorder),
-              borderRadius: BorderRadius.circular(12),
-            ),
+          // Donut chart
+          _Card(
+            label: 'SECTOR ALLOCATION',
             child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                Text('SECTOR ALLOCATION',
-                    style: TextStyle(fontSize: 10, color: kGold, letterSpacing: 1.5)),
-                const SizedBox(height: 16),
                 SizedBox(
                   height: 200,
-                  child: PieChart(
-                    PieChartData(
-                      sectionsSpace: 3,
-                      centerSpaceRadius: 50,
-                      sections: sectorList.asMap().entries.map((e) {
-                        final color = kSectorColors[e.key % kSectorColors.length];
-                        return PieChartSectionData(
-                          value: e.value.value,
-                          color: color,
-                          radius: 55,
-                          showTitle: false,
-                        );
-                      }).toList(),
+                  child: CustomPaint(
+                    painter: _DonutPainter(
+                      values: sectorList.map((e) => e.value).toList(),
+                      colors: List.generate(
+                          sectorList.length,
+                          (i) => kSectorColors[i % kSectorColors.length]),
+                    ),
+                    child: Center(
+                      child: Text(
+                        '${sectorList.length}\nsectors',
+                        textAlign: TextAlign.center,
+                        style: const TextStyle(fontSize: 12, color: kMuted, height: 1.4),
+                      ),
                     ),
                   ),
                 ),
@@ -69,12 +61,11 @@ class ChartsTab extends StatelessWidget {
                         Container(
                           width: 8, height: 8,
                           decoration: BoxDecoration(
-                            color: color, borderRadius: BorderRadius.circular(2),
-                          ),
+                              color: color, borderRadius: BorderRadius.circular(2)),
                         ),
                         const SizedBox(width: 5),
                         Text(
-                          '${e.value.key} ${e.value.value.toStringAsFixed(1)}%',
+                          '${e.value.key}  ${e.value.value.toStringAsFixed(1)}%',
                           style: const TextStyle(fontSize: 11, color: kMuted),
                         ),
                       ],
@@ -87,98 +78,170 @@ class ChartsTab extends StatelessWidget {
 
           const SizedBox(height: 14),
 
-          // Gain/Loss Bar Chart
-          Container(
-            padding: const EdgeInsets.all(20),
-            decoration: BoxDecoration(
-              color: Colors.white.withOpacity(0.02),
-              border: Border.all(color: kBorder),
-              borderRadius: BorderRadius.circular(12),
-            ),
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Text('GAIN / LOSS BY POSITION',
-                    style: TextStyle(fontSize: 10, color: kGold, letterSpacing: 1.5)),
-                const SizedBox(height: 16),
-                SizedBox(
-                  height: 200,
-                  child: BarChart(
-                    BarChartData(
-                      alignment: BarChartAlignment.spaceAround,
-                      maxY: enriched.map((h) => h.gain.abs()).fold(0.0, (a, b) => a > b ? a : b) * 1.3 + 5,
-                      minY: -(enriched.map((h) => h.gain.abs()).fold(0.0, (a, b) => a > b ? a : b) * 1.3 + 5),
-                      barTouchData: BarTouchData(
-                        touchTooltipData: BarTouchTooltipData(
-                          getTooltipColor: (_) => const Color(0xFF1A1208),
-                          getTooltipItem: (group, _, rod, __) {
-                            final h = enriched[group.x];
-                            return BarTooltipItem(
-                              '${h.ticker}\n${rod.toY >= 0 ? '+' : ''}${rod.toY.toStringAsFixed(1)}%',
-                              TextStyle(color: rod.toY >= 0 ? kGreen : kRed, fontSize: 12),
-                            );
-                          },
-                        ),
-                      ),
-                      titlesData: FlTitlesData(
-                        bottomTitles: AxisTitles(
-                          sideTitles: SideTitles(
-                            showTitles: true,
-                            getTitlesWidget: (v, _) {
-                              final i = v.toInt();
-                              if (i < 0 || i >= enriched.length) return const SizedBox();
-                              return Padding(
-                                padding: const EdgeInsets.only(top: 6),
-                                child: Text(enriched[i].ticker,
-                                    style: const TextStyle(fontSize: 10, color: kMuted)),
-                              );
-                            },
-                          ),
-                        ),
-                        leftTitles: AxisTitles(
-                          sideTitles: SideTitles(
-                            showTitles: true,
-                            reservedSize: 40,
-                            getTitlesWidget: (v, _) => Text(
-                              '${v.toStringAsFixed(0)}%',
-                              style: const TextStyle(fontSize: 9, color: Color(0xFF666666)),
-                            ),
-                          ),
-                        ),
-                        topTitles: const AxisTitles(sideTitles: SideTitles(showTitles: false)),
-                        rightTitles: const AxisTitles(sideTitles: SideTitles(showTitles: false)),
-                      ),
-                      gridData: FlGridData(
-                        drawVerticalLine: false,
-                        getDrawingHorizontalLine: (_) =>
-                            const FlLine(color: Color(0x08FFFFFF), strokeWidth: 1),
-                      ),
-                      borderData: FlBorderData(show: false),
-                      barGroups: enriched.asMap().entries.map((e) {
-                        final gain = e.value.gain;
-                        return BarChartGroupData(
-                          x: e.key,
-                          barRods: [
-                            BarChartRodData(
-                              toY: gain,
-                              color: gain >= 0 ? kGreen : kRed,
-                              width: 20,
-                              borderRadius: gain >= 0
-                                  ? const BorderRadius.vertical(top: Radius.circular(4))
-                                  : const BorderRadius.vertical(bottom: Radius.circular(4)),
-                            ),
-                          ],
-                        );
-                      }).toList(),
-                    ),
-                  ),
-                ),
-              ],
+          // Bar chart
+          _Card(
+            label: 'GAIN / LOSS BY POSITION',
+            child: SizedBox(
+              height: 220,
+              child: CustomPaint(
+                painter: _BarPainter(holdings: enriched),
+                size: Size.infinite,
+              ),
             ),
           ),
+
           const SizedBox(height: 16),
         ],
       ),
     );
   }
+}
+
+class _Card extends StatelessWidget {
+  final String label;
+  final Widget child;
+  const _Card({required this.label, required this.child});
+
+  @override
+  Widget build(BuildContext context) {
+    return Container(
+      width: double.infinity,
+      padding: const EdgeInsets.all(20),
+      decoration: BoxDecoration(
+        color: Colors.white.withOpacity(0.02),
+        border: Border.all(color: kBorder),
+        borderRadius: BorderRadius.circular(12),
+      ),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Text(label, style: const TextStyle(fontSize: 10, color: kGold, letterSpacing: 1.5)),
+          const SizedBox(height: 16),
+          child,
+        ],
+      ),
+    );
+  }
+}
+
+class _DonutPainter extends CustomPainter {
+  final List<double> values;
+  final List<Color> colors;
+  _DonutPainter({required this.values, required this.colors});
+
+  @override
+  void paint(Canvas canvas, Size size) {
+    if (values.isEmpty) return;
+    final total = values.fold(0.0, (a, b) => a + b);
+    final cx = size.width / 2;
+    final cy = size.height / 2;
+    final outerR = min(cx, cy) - 8;
+    final ringR = (outerR + outerR * 0.55) / 2;
+    final strokeW = outerR - outerR * 0.55;
+
+    double startAngle = -pi / 2;
+    for (var i = 0; i < values.length; i++) {
+      final sweep = (values[i] / total) * 2 * pi;
+      canvas.drawArc(
+        Rect.fromCircle(center: Offset(cx, cy), radius: ringR),
+        startAngle + 0.04,
+        sweep - 0.08,
+        false,
+        Paint()
+          ..color = colors[i % colors.length]
+          ..style = PaintingStyle.stroke
+          ..strokeWidth = strokeW
+          ..strokeCap = StrokeCap.butt,
+      );
+      startAngle += sweep;
+    }
+  }
+
+  @override
+  bool shouldRepaint(_DonutPainter old) => false;
+}
+
+class _BarPainter extends CustomPainter {
+  final List<Holding> holdings;
+  _BarPainter({required this.holdings});
+
+  @override
+  void paint(Canvas canvas, Size size) {
+    if (holdings.isEmpty) return;
+
+    const labelH = 24.0;
+    const yAxisW = 44.0;
+    final chartW = size.width - yAxisW;
+    final chartH = size.height - labelH;
+
+    final maxAbs = holdings.map((h) => h.gain.abs()).fold(0.0, (a, b) => a > b ? a : b);
+    final scale = maxAbs < 1 ? 10.0 : maxAbs * 1.35;
+    final zeroY = chartH / 2;
+
+    // Zero line
+    canvas.drawLine(
+      Offset(yAxisW, zeroY), Offset(size.width, zeroY),
+      Paint()..color = Colors.white.withOpacity(0.15)..strokeWidth = 1,
+    );
+
+    // Grid + Y labels
+    for (final pct in [-0.5, 0.5]) {
+      final y = zeroY - pct * zeroY;
+      canvas.drawLine(
+        Offset(yAxisW, y), Offset(size.width, y),
+        Paint()..color = Colors.white.withOpacity(0.05)..strokeWidth = 1,
+      );
+      _drawText(canvas, '${(pct * scale).toStringAsFixed(0)}%',
+          Offset(0, y), 9, const Color(0xFF666666));
+    }
+
+    // Bars
+    final gap = chartW / holdings.length;
+    final barW = gap * 0.5;
+
+    for (var i = 0; i < holdings.length; i++) {
+      final h = holdings[i];
+      final barH = ((h.gain.abs() / scale) * zeroY).clamp(1.0, zeroY);
+      final x = yAxisW + gap * i + gap / 2 - barW / 2;
+      final color = h.gain >= 0 ? kGreen : kRed;
+
+      final top = h.gain >= 0 ? zeroY - barH : zeroY;
+      final rr = RRect.fromRectAndCorners(
+        Rect.fromLTWH(x, top, barW, barH),
+        topLeft: h.gain >= 0 ? const Radius.circular(4) : Radius.zero,
+        topRight: h.gain >= 0 ? const Radius.circular(4) : Radius.zero,
+        bottomLeft: h.gain < 0 ? const Radius.circular(4) : Radius.zero,
+        bottomRight: h.gain < 0 ? const Radius.circular(4) : Radius.zero,
+      );
+      canvas.drawRRect(rr, Paint()..color = color);
+
+      // Gain label
+      final gainStr = '${h.gain >= 0 ? '+' : ''}${h.gain.toStringAsFixed(1)}%';
+      final glY = h.gain >= 0 ? top - 14 : top + barH + 2;
+      _drawText(canvas, gainStr, Offset(x + barW / 2, glY.clamp(0, chartH - 12)),
+          8, color, centered: true, bold: true);
+
+      // Ticker
+      _drawText(canvas, h.ticker,
+          Offset(x + barW / 2, chartH + (labelH - 12) / 2), 10, kMuted,
+          centered: true);
+    }
+  }
+
+  void _drawText(Canvas canvas, String text, Offset offset, double fontSize,
+      Color color, {bool centered = false, bool bold = false}) {
+    final tp = TextPainter(
+      text: TextSpan(
+          text: text,
+          style: TextStyle(
+              fontSize: fontSize,
+              color: color,
+              fontWeight: bold ? FontWeight.w600 : FontWeight.normal)),
+      textDirection: TextDirection.ltr,
+    )..layout();
+    tp.paint(canvas, centered ? Offset(offset.dx - tp.width / 2, offset.dy) : offset);
+  }
+
+  @override
+  bool shouldRepaint(_BarPainter old) => false;
 }
